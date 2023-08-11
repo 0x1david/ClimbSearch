@@ -6,7 +6,7 @@ ClimbSearch is a bash script that aids and helps speed up navigating the directo
 
 - **Directory Matching**: If the script matches a directory, it automatically changes your current directory to the matched directory.
 - **File Matching**: If a file is matched, it's opened in vim for editing or viewing.
-- **Hierarchy Navigation**: Looks through parent directories recursively to find matches.
+- **Hierarchy Navigation**: Looks through children directories recursively to find matches.
 
 ## Installation TBD
 
