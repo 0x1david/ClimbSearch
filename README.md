@@ -1,6 +1,6 @@
 # ClimbSearch
 
-ClimbSearch is a powerful bash script that aids in navigating the directory tree on Linux. By looking through higher hierarchical directories, it finds directories or files that match your input and then takes action based on the type of match.
+ClimbSearch is a bash script that aids and helps speed up navigating the directory tree on Linux. By looking through higher hierarchical directories, it finds directories or files that match your input and then takes action based on the type of match.
 
 ## Features
 
