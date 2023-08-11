@@ -18,11 +18,11 @@ Replace `[pattern]` with the name or pattern of the directory or file you're sea
 
 ## Example
 
-Suppose you're in the directory `/home/user/documents` and you want to quickly move to the `/home/user/documents/projects/2023` directory or open a file named `2023.md` if it exists.
+Suppose you're in the directory `/home/user/documents` and you want to quickly move to the `/home/user/documents/projects/years/2023` directory or open a file named `2023.md` if it exists.
 
 Just run: ***cs 2023***
 
-If `2023` is a directory, your current directory will change to `/home/user/documents/projects/2023/`. If `2023.md` is a file in one of the parent directories, it will open in vim.
+If `2023` is a directory, your current directory will change to `/home/user/documents/projects/years/2023/`. If `2023.md` is a file in one of the parent directories, it will open in vim.
 
 ## Dependencies
 
