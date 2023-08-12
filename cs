@@ -1,10 +1,24 @@
 #!/bin/bash
 
 #$HOME/.bash_profile
+print_path="false"
+print_ls="false"
+time_edited=( -atime -62 )
+force_cd="false"
+
 handle_one_result() {
-  echo "I got here"
   if [ -f "$1" ]; then
-    nvim "$1"
+    echo "ass"
+    echo "$print_ls"
+    if [ "$print_path" = "true" ]; then
+      echo "$1"
+      exit
+    elif [ "$print_ls" = "true" ]; then
+      ls -la "$1"
+      exit
+    else
+      nvim "$1"
+    fi
   elif [ -d "$1" ]; then
     echo "end $1"
   fi
@@ -22,41 +36,49 @@ handle_multiple_results() {
   handle_one_result "$placeholder"
  }
 
-
-case $1 in 
+while getopts "sltdf" option; do
+ case $option in 
   # fizz
   # fz -s --see -> prints the found directory
-  -s | --see)
+  s)
           echo "PRINTS THE FOUNDS DIRECTORY PATH"
+          print_path="true"
           ;;
   #fz -l --look -> prints the directory contents
-  -l | --look)
+  l)
           echo "PRINTS THE DIRECTORY CONTENTS"
+          print_ls="true"
           ;;
  # fz -t --time -> fz does not use it's usual 1Month period
-  -t | --time)
+  t)
           echo "Skips 2M argument"
+          time_edited=()
           ;;
  # fz -d -> if fz finds a file it still goes to directorywithout opening a file
-  -d)
+  d)
           echo "Goes directory into a directory even if a file is found in its place"
           ;;
+  *)
+          echo "Unknown option: -$OPTARG" >&2
+          exit
   # fz -f --force --first -> if fz finds multiple targets it takes the one closest to you in path
-  -f | --force | --first)
-          echo "If finds multiple targets takes you to the one closest to you"
-          ;;
-      esac
+    esac
+  done
 
-regex_string="$2"
-if [ "$regex_string" ]; then
-  first_step=$(find "$PWD" -atime -62 -name "*$regex_string*" )
-  echo "$first_step"
-  result_count=$(echo "$first_step" | wc -l)
+shift "$((OPTIND-1))"
 
-  if [ "$result_count" -eq 1 ]; then
-    handle_one_result "$first_step"
-  elif [ "$result_count" -gt 1 ]; then
-    echo "$first_step" | handle_multiple_results
+
+if [ $# -ge 1 ]; then
+  regex_string="$1"
+  if [ "$regex_string" ]; then
+    first_step=$(find "$PWD" "${time_edited[@]}" -name "*$regex_string*" )
+    result_count=$(echo "$first_step" | wc -l)
+
+    if [ "$result_count" -eq 1 ]; then
+      handle_one_result "$first_step"
+    elif [ "$result_count" -gt 1 ]; then
+      echo "$first_step" | handle_multiple_results
+    fi
   fi
 fi
 #directory="$3"
