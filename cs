@@ -8,8 +8,6 @@ force_cd="false"
 
 handle_one_result() {
   if [ -f "$1" ]; then
-    echo "ass"
-    echo "$print_ls"
     if [ "$print_path" = "true" ]; then
       echo "$1"
       exit
@@ -19,22 +17,34 @@ handle_one_result() {
     else
       nvim "$1"
     fi
-  elif [ -d "$1" ]; then
-    echo "end $1"
+  cd "$1"
   fi
 }
 handle_multiple_results() {
   current_distance=50
+  placeholder=0
   while IFS= read -r result; do
-   iter_distance=$(echo "$result" | tr -cd '/'| wc -c)
+    echo "$result"
+    result=${result// /}   # Removing spaces without pipes
+    iter_distance=0
+    for i in $(seq 1 ${#result}); do
+      [[ "${result:$i:1}" == "/" ]] && ((iter_distance++))
+    done
 
-   if [ "$current_distance" -gt "$iter_distance" ]; then
-     current_distance="$iter_distance"
-     placeholder="$result"
-   fi
+    if [ "$current_distance" -gt "$iter_distance" ]; then
+      current_distance="$iter_distance"
+      placeholder="$result"
+    fi
   done
-  handle_one_result "$placeholder"
- }
+
+  if [ -n "$placeholder" ]; then
+    cd "$placeholder"
+    [ -d "$placeholder" ] && echo "It is a directory" || echo "It's not a directory"
+    handle_one_result "$placeholder"
+  else
+    echo "Found no matches"
+  fi
+}
 
 while getopts "sltdf" option; do
  case $option in 
@@ -77,7 +87,9 @@ if [ $# -ge 1 ]; then
     if [ "$result_count" -eq 1 ]; then
       handle_one_result "$first_step"
     elif [ "$result_count" -gt 1 ]; then
-      echo "$first_step" | handle_multiple_results
+      first_step="${first_step// /}"
+      cd "$first_step"
+      handle_multiple_results <<<"$first_step"
     fi
   fi
 fi
@@ -88,4 +100,5 @@ fi
   # if fz finds only a file it uses nvims to it
   # if fz finds multiple directories  in the same path it will bring you to the one closest to your cwd
  #case $2 in
+
 
